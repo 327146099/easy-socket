@@ -35,9 +35,14 @@ public class ServerIOManager implements IIOManager {
 
     private Timer timer;
 
-    private MessageListener messageListener;
+    private final MessageListener messageListener;
 
     public ServerIOManager(ISocket socket) {
+        this(socket, null);
+    }
+
+    public ServerIOManager(ISocket socket, MessageListener messageListener) {
+        this.messageListener = messageListener;
         try {
             initIO(socket);
         } catch (IOException e) {
@@ -48,7 +53,7 @@ public class ServerIOManager implements IIOManager {
     //初始化io
     private void initIO(ISocket socket) throws IOException {
         writer = new ServerWriter(socket.getOutputStream(), socket); //写
-        HandlerIO handlerIO = new HandlerIO(writer,messageListener);
+        HandlerIO handlerIO = new HandlerIO(writer, messageListener);
         reader = new ServerReader(socket.getInputStream(), socket, handlerIO); //读
         this.socket = socket;
     }
